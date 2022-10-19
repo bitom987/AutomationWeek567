@@ -238,7 +238,31 @@ function sumTwoPositive(a, b) {
    }
    
 //   + Object Literals and JSON
+var a = 1,
+    b = 2,
+    c = 3;
 
+let obj = { a, b, c };
+
+console.log(obj); // { "a" : 1, "b" : 2, "c" : 3 }
+
+var nameField = 'name';
+var P = 'price';
+var n = 'name';
+var p = 'price';
+
+const info = {
+    n,
+    p,
+    getName(){
+        return n;
+    }
+}
+
+const course ={
+    [nameField]: "Garoon",
+    [P]: 2000
+}
 
 const employee = { id: 1, name: 'ToMinhQuan', age: undefined }
 JSON.stringify(employee); // '{"id": 1, "name": "ToMinhQuan" }'
