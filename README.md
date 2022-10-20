@@ -378,6 +378,9 @@ QuanTo owned this phone, it is Iphone - 14ProMax
 ```
 </details>
 
+---
+<br></br>
+
 - Tìm hiểu ở mức cơ bản về Async / Await
 ```javascript
 const PromiseTest = new Promise((resolve,reject) => {
