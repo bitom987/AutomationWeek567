@@ -230,6 +230,15 @@ const numberList4 = [2, 4, 6];
 for (const number of numberList4) {
  console.log(number); // 2, 4, 6
 }
+// for...in
+const Object = {
+    name: "quan",
+    age: "21"
+};
+let text ="";
+for (let x in Object){
+    text += Object[x] + " "
+}
 
 //   + Working with function
 function sumTwoPositive(a, b) {
@@ -285,5 +294,45 @@ JSON.parse('{"foo" : 1, }'); // Syntax Error
 
 
 //   + Class and constructor
+class Phone {
+    constructor(brand,year){
+        this.brand = brand;
+        this.year = year; 
+    }
+    showInfo = () =>{
+        console.log(`This phone is ${this.brand} - ${this.year}`);
+    }
+};
 
+class Owner extends Phone {
+    constructor(brand,year,name){
+        super(brand,year);
+        this.name = name;
+    }
+    getInfo = () =>{
+        console.log(`${this.name} owned this phone, it is ${this.brand} - ${this.year}`);
+    }
+} 
+
+const quan = new Owner('Iphone','14ProMax','QuanTo')
+quan.showInfo();
+quan.getInfo();
 //   + Tìm hiểu ở mức cơ bản về Async / Await
+
+const PromiseTest = new Promise((resolve,reject) => {
+    setTimeout(()=>{
+        resolve(1)
+    },4000);
+})  
+
+
+let printnumb = async ()=>{
+    let num1 = await PromiseTest;
+    console.log(num1);
+    setTimeout(()=>{
+        console.log(2);
+    },3000)
+    console.log(3);
+}
+
+printnumb();
