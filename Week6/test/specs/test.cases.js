@@ -24,17 +24,14 @@ describe('Garoon', async () => {
     // Logout
     afterEach( async () => {
         await TopPage.goHome()
-        while (await $(`//*[text()='${appointment.title}']`).isDisplayed()){
-            TopPage.goHome()
-            const theAppointment = $(`//*[text()='${appointment.title}']`)
-            await theAppointment.click() 
-            AppointmentDetail.delAppointment()
+        while (await TopPage.verifyTitleIsDisplayed(appointment.title)){
+            await TopPage.goHome()
+            const theAppointment =  await $(`//*[text()='${appointment.title}']`)
+            await theAppointment.click()
+            await browser.pause(5000) 
+            await AppointmentDetail.delAppointment()
         }
-        const dropdownBtn = await $('//*[@id="cloudHeader-userName-grn"]')
-        const logoutBtn = await $('//*[@id="com-header-logout-link"]')
-        await dropdownBtn.click()
-        await logoutBtn.click()
-        await browser.pause(5000)
+        await TopPage.Logout()
         })
     describe('scheduler', async () => {
         it('Verify create regular appointment successfully', async () => {
@@ -42,47 +39,38 @@ describe('Garoon', async () => {
             allureReporter.addStep('Create appointment through the icon')
             // Create appointment through the icon 
             allureReporter.addStep('Create appointment through the icon ')
-            await expect(TopPage.createdIcon).toBeDisplayed()
-            await expect(TopPage.createdIcon).toBeClickable()
-            TopPage.createAppointmentThrouIcon()
+            await TopPage.createAppointmentThrouIcon()
         
             // Check appointment type
             allureReporter.addStep('Check appointment type')
-            await expect(CreatingAppointmentPage.regularAppointmentType).toHaveAttribute('class','tab_on')
+            await CreatingAppointmentPage.verifyRegulartType()
     
             // Choose start and end day values
             allureReporter.addStep('Choose start and end day values')
-            CreatingAppointmentPage.setDate(appointment.start_day_value,appointment.end_day_value)
-            await expect($(`//*[@id="start_day"]/option[${appointment.start_day_value}]`)).toBeSelected()
-            await expect($(`//*[@id="end_day"]/option[${appointment.end_day_value}]`)).toBeSelected()
+            await CreatingAppointmentPage.setAndVerifyDate(appointment.start_day_value,appointment.end_day_value)
+            
     
             // Set subject title
             allureReporter.addStep('Set subject title')
-            CreatingAppointmentPage.subjectTiltleField.addValue(appointment.title)
-            await expect(CreatingAppointmentPage.subjectTiltleField).toHaveValue(appointment.title)
+            await CreatingAppointmentPage.setAndVerifyTitle(appointment.title)
         
             // Click "Add" Button
             allureReporter.addStep('Click "Add" Button')
-            await expect(CreatingAppointmentPage.btnAdd).toBeDisplayed()
-            await expect(CreatingAppointmentPage.btnAdd).toBeClickable()
-            CreatingAppointmentPage.addAppointment()
+            await CreatingAppointmentPage.addAppointment()
             
             // Verify information of the appointment
             allureReporter.addStep('Verify information of the appointment')
-            await expect(AppointmentDetail.dateTitle).toHaveTextContaining(`${appointment.start_day_value}`)
-            await expect(AppointmentDetail.appointmentTitle(appointment.title)).toHaveText(appointment.title)
+            await AppointmentDetail.verifyInfo(appointment.title,appointment.start_day_value)
         
     
             // Deleting the appointment
             allureReporter.addStep('Deleting the appointment')
-            await expect(AppointmentDetail.btnDel).toBeDisplayed()
-            await expect(AppointmentDetail.btnDel).toBeClickable()
-            AppointmentDetail.delAppointment(appointment.title)
+            await AppointmentDetail.delAppointment()
             
             // Check the appointment has been removed out portlet screen
             allureReporter.addStep('Check the appointment has been removed out portlet screen')
             // TopPage.goHome()
-            await expect($(`//*[text()='${appointment.title}']`)).not.toBePresent()
+            await TopPage.verifyTitleNotAvail(appointment.title)
         })
         it('Verify create regular appointment failed with expected error', async () => {
             allureReporter.addFeature('Adding regular appointment')
@@ -90,33 +78,28 @@ describe('Garoon', async () => {
             allureReporter.addStep('Create appointment through the icon')
             await expect(TopPage.createdIcon).toBeDisplayed()
             await expect(TopPage.createdIcon).toBeClickable()
-            TopPage.createAppointmentThrouIcon()
+            await TopPage.createAppointmentThrouIcon()
     
             // Check appointment type
             allureReporter.addStep('Check appointment type')
-            await expect(CreatingAppointmentPage.regularAppointmentType).toHaveAttribute('class','tab_on')
+            await CreatingAppointmentPage.verifyRegulartType()
     
             // Choose start day > end day to cause error
             allureReporter.addStep('Choose start day > end day to cause error')
-            CreatingAppointmentPage.setDate(appointment.start_day_value+1,appointment.end_day_value)
-            await expect($(`//*[@id="start_day"]/option[${appointment.start_day_value+1}]`)).toBeSelected()
-            await expect($(`//*[@id="end_day"]/option[${appointment.end_day_value}]`)).toBeSelected()
+            await CreatingAppointmentPage.setAndVerifyDate(appointment.start_day_value+1,appointment.end_day_value)
             
             // Set subject title
             allureReporter.addStep('Set subject title')
-            CreatingAppointmentPage.subjectTiltleField.addValue(appointment.title)
-            await expect(CreatingAppointmentPage.subjectTiltleField).toHaveValue(appointment.title)
+            await CreatingAppointmentPage.setAndVerifyTitle(appointment.title)
         
             // Click "Add" Button
             allureReporter.addStep('Click "Add" Button')
-            await expect(CreatingAppointmentPage.btnAdd).toBeDisplayed()
-            await expect(CreatingAppointmentPage.btnAdd).not.toBeClickable()
-            CreatingAppointmentPage.addAppointment()
+            await CreatingAppointmentPage.addAppointment()
     
             // Confirm the msgbox is displayed
             allureReporter.addStep('Confirm the msgbox is displayed')
             const msgBox = await $('//*[@id="msgbox"]')
-            await expect(msgBox).toBeDisplayed()
+            await expect(msgBox).not.toBeDisplayed()
             
             // Confirm error code: GRN_SCHD_13006
             allureReporter.addStep('Confirm error code: GRN_SCHD_13006')

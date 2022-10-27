@@ -25,9 +25,30 @@ class AppointmentDetail {
     async appointmentTitle(value){
         return $(`h2=${value}`)
     }
-    async delAppointment(value){
+    async verifyInfo(title,date){
+        await expect(this.dateTitle).toHaveTextContaining(`${date}`)
+        await expect(this.appointmentTitle(title)).toHaveText(title)
+    }
+    async delAppointment(){
+        await browser.waitUntil(
+            async()=>(await (this.btnDel).isDisplayed())===true,
+            {
+                timeout: 5000,
+                timeoutMsg: 'Delbtn is not shown'
+            }
+        )
+        await expect(this.btnDel).toBeClickable()
         await this.btnDel.click()
+        await browser.waitUntil(
+            async()=>(await (this.confirmBtnDel).isDisplayed())===true,
+            {
+                timeout: 5000,
+                timeoutMsg: 'confirmDelbtn is not shown'
+            }
+        )
+        await expect(this.confirmBtnDel).toBeClickable()
         await this.confirmBtnDel.click() 
+        await browser.pause(2000)
     }
 }
 

@@ -21,12 +21,20 @@ class CreatingAppointmentPage extends Page {
     async verifyRegulartType(){
         await expect(this.regularAppointmentType).toHaveAttribute('class','tab_on')
     }
-    async setDate(start,end){
+    async setAndVerifyDate(start,end){
         await $(`//*[@id="start_day"]/option[${start}]`).click()
         await $(`//*[@id="end_day"]/option[${end}]`).click()
+        await expect($(`//*[@id="start_day"]/option[${start}]`)).toBeSelected()
+        await expect($(`//*[@id="end_day"]/option[${end}]`)).toBeSelected()
     }
     async addAppointment(){
+        await expect(this.btnAdd).toBeDisplayed()
+        await expect(this.btnAdd).toBeClickable()
         await this.btnAdd.click()
+    }
+    async setAndVerifyTitle(value){
+        this.subjectTiltleField.addValue(value)
+        await expect(this.subjectTiltleField).toHaveValue(value)
     }
 }
 
