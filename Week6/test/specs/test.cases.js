@@ -17,6 +17,7 @@ describe('Garoon', async () => {
             password: 'cybozu'
         }
             LoginPage.open();
+            await browser.pause(5000)
             LoginPage.login(account.username,account.password)
             const garoonBtn = await $('a[href="/g/"]')
             await garoonBtn.click()
